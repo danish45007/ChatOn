@@ -4,28 +4,44 @@ const User = require('../../models/Users');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { UserInputError } = require('apollo-server');
-const { validateRegesterInput } = require('../../utils/validators');
+const {
+	validateRegesterInput,
+	validateLoginUser,
+} = require('../../utils/validators');
+
+const genratetoken = async (user) => {
+    return await jwt.sign(
+        {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+        },
+        process.env.SECRET,
+        { expiresIn: '1h' }
+    );
+}
 
 module.exports = {
 	Mutation: {
+		// register mutation
 		async register(
 			_,
 			{ registerInput: { username, password, email, confirmPassword } },
 			context,
 			info
 		) {
-            // TODO: Validate user data
-            const { errors, valid } = validateRegesterInput(
-							username,
-							email,
-							password,
-							confirmPassword
-						);
-						if (!valid) {
-							throw new UserInputError('Error', {
-								errors,
-							});
-						}
+			// TODO: Validate user data
+			const { errors, valid } = validateRegesterInput(
+				username,
+				email,
+				password,
+				confirmPassword
+			);
+			if (!valid) {
+				throw new UserInputError('Error', {
+					errors,
+				});
+			}
 			// TODO: Make sure user doesn't exists already
 
 			const user = await User.findOne({ username });
@@ -54,21 +70,55 @@ module.exports = {
 			const res = await newUser.save();
 
 			// creating a webtoken for auth
-			const token = await jwt.sign(
-				{
-					id: res.id,
-					username: res.username,
-					email: res.email,
-				},
-				process.env.SECRET,
-				{ expiresIn: '1h' }
-			);
+			const token = genratetoken(res)
 			// return data back to user
 			return {
 				...res._doc,
 				id: res._id,
 				token,
 			};
-		},
+        },
+
+        
+        // login mutation
+        async login(
+            _,
+			{ loginInput: { username, password } },
+			context,
+            info) {
+            // field validation check
+            const { errors, valid } = validateLoginUser(username, password);
+
+            if (!valid) {
+				throw new UserInputError('Error', {
+					errors,
+				});
+			}
+
+            const user = await User.findOne({ username })
+            // console.log(user.password)
+            
+            // check is user exist's
+            if (!user) {
+                errors.findError = "user not found"
+                throw new UserInputError('User not found', {
+                    errors,
+                });
+            }
+            // checking the password
+            const match = await bcrypt.compare(password, user.password)
+            if (!match) {
+                errors.creds = 'wrong credentials'
+                throw new UserInputError('Wrong credentials', {errors})
+            }
+
+            // creating token
+            const token = genratetoken(user)
+            return {
+                ...user._doc,
+                id: user._id,
+                token
+            }
+        },
 	},
 };
