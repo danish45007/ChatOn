@@ -8,6 +8,8 @@ const resolvers = require('./graphql/resolvers');
 const server = new ApolloServer({
 	typeDefs: typeDefs,
 	resolvers: resolvers,
+	// taking the request body from the express
+	context: ({ req }) => ({ req }),
 });
 
 // connecting to mongoDB atlas
