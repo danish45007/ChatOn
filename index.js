@@ -3,14 +3,12 @@ require('dotenv').config({ path: Path.join(__dirname, `.env.staging`) });
 const { ApolloServer } = require('apollo-server');
 const mongoose = require('mongoose');
 const typeDefs = require('./graphql/typedef');
-const resolvers = require('./graphql/resolvers/post');
+const resolvers = require('./graphql/resolvers');
 
 const server = new ApolloServer({
 	typeDefs: typeDefs,
 	resolvers: resolvers,
 });
-
-// server.applyMiddleware(morgan('short'))
 
 // connecting to mongoDB atlas
 mongoose
@@ -19,13 +17,13 @@ mongoose
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 	})
-	.then(() => console.log('Connected to DB'))
+	.then(() => {
+		console.log('Connected to mongoDB');
+		return server.listen(process.env.PORT).then((res) => {
+			console.log(`Server is running at port ${res.url}`);
+		});
+	})
 	.catch((err) => console.log(err));
 
-server
-	.listen({
-		port: 5000,
-	})
-	.then((res) => {
-		console.log(`Server is running at port ${res.url}`);
-	});
+
+	
