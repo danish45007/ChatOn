@@ -1,12 +1,14 @@
 const Posts = require('../../models/Post');
-const { UserInputError } = require('apollo-server');
+const { UserInputError, AuthenticationError } = require('apollo-server');
 const checkAuth = require('../../utils/checkAuth');
+const { findById } = require('../../models/Post');
 
 module.exports = {
 	Query: {
+		// get all the post
 		async getPosts() {
 			try {
-				const posts = await Posts.find();
+				const posts = await Posts.find().sort({ createdAt: -1 });
 				return posts;
 			} catch (err) {
 				console.log(err);
@@ -28,23 +30,42 @@ module.exports = {
 				throw new Error(err);
 			}
 		},
-    },
-    Mutation: {
-        async createPost(_, { body }, context) {
-            // verified user
-            const user = checkAuth(context)
-            console.log(user)
-            // post payload
-            const newPost = new Posts({
-                body,
-                user: user.id,
-                username: user.username,
-                createdAt: new Date().toISOString()
-            })
+	},
+	Mutation: {
+		// create post method
+		async createPost(_, { body }, context) {
+			// verified user
+			const user = checkAuth(context);
+			console.log(user);
+			// post payload
+			const newPost = new Posts({
+				body,
+				user: user.id,
+				username: user.username,
+				createdAt: new Date().toISOString(),
+			});
 
-            // saving the post
-            const post = await newPost.save();
-            return post
-        }
-    }
+			// saving the post
+			const post = await newPost.save();
+			return post;
+		},
+		// delete post
+		async deletePost(_, { postId }, context) {
+			const user = checkAuth(context);
+
+			try {
+				const post = await Posts.findById(postId);
+				console.log(post);
+				if (user.username === post.username) {
+					await post.delete();
+					return `Post with postId ${postId} has been deleted successfully`;
+				} else {
+					throw new AuthenticationError('You are not the Authorized user');
+				}
+			} catch (err) {
+				console.log(err);
+				throw new Error(err);
+			}
+		},
+	},
 };
