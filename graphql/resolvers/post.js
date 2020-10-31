@@ -8,7 +8,7 @@ module.exports = {
 		async getPosts() {
 			try {
 				const posts = await Posts.find().sort({ createdAt: -1 });
-				console.log(posts);
+				// console.log(posts);
 				return posts;
 			} catch (err) {
 				console.log(err);

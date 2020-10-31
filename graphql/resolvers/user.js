@@ -72,6 +72,7 @@ module.exports = {
 			// creating a webtoken for auth
 			const token = genratetoken(res);
 			// return data back to user
+			console.log(res);
 			return {
 				...res._doc,
 				id: res._id,
