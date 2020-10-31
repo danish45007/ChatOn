@@ -4,6 +4,14 @@ const commentResolver = require('./comment');
 const likeResolver = require('./like');
 // const subResolver = require('./subcription');
 module.exports = {
+	Post: {
+		likeCount(parent) {
+			return parent.likes.length;
+		},
+		commnetCount(parent) {
+			return parent.comments.length;
+		},
+	},
 	Query: {
 		...postsResolver.Query,
 	},

@@ -7,11 +7,12 @@ import { ApolloProvider } from '@apollo/react-hooks';
 
 // creating the single end-point of server
 const httpLink = createHttpLink({
-	uri: 'http://localhost:8000/',
+	uri: ' http://localhost:8000/',
 });
 
 const client = new ApolloClient({
 	link: httpLink,
+	headers: { authorization: `bearer [token]` },
 	cache: new InMemoryCache(),
 });
 

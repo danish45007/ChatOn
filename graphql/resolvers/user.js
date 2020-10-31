@@ -10,16 +10,16 @@ const {
 } = require('../../utils/validators');
 
 const genratetoken = async (user) => {
-    return await jwt.sign(
-        {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-        },
-        process.env.SECRET,
-        { expiresIn: '1h' }
-    );
-}
+	return await jwt.sign(
+		{
+			id: user.id,
+			username: user.username,
+			email: user.email,
+		},
+		process.env.SECRET,
+		{ expiresIn: '1h' }
+	);
+};
 
 module.exports = {
 	Mutation: {
@@ -70,55 +70,50 @@ module.exports = {
 			const res = await newUser.save();
 
 			// creating a webtoken for auth
-			const token = genratetoken(res)
+			const token = genratetoken(res);
 			// return data back to user
 			return {
 				...res._doc,
 				id: res._id,
 				token,
 			};
-        },
+		},
 
-        
-        // login mutation
-        async login(
-            _,
-			{ loginInput: { username, password } },
-			context,
-            info) {
-            // field validation check
-            const { errors, valid } = validateLoginUser(username, password);
+		// login mutation
+		async login(_, { loginInput: { username, password } }, context, info) {
+			// field validation check
+			const { errors, valid } = validateLoginUser(username, password);
 
-            if (!valid) {
+			if (!valid) {
 				throw new UserInputError('Error', {
 					errors,
 				});
 			}
 
-            const user = await User.findOne({ username })
-            // console.log(user.password)
-            
-            // check is user exist's
-            if (!user) {
-                errors.findError = "user not found"
-                throw new UserInputError('User not found', {
-                    errors,
-                });
-            }
-            // checking the password
-            const match = await bcrypt.compare(password, user.password)
-            if (!match) {
-                errors.creds = 'wrong credentials'
-                throw new UserInputError('Wrong credentials', {errors})
-            }
+			const user = await User.findOne({ username });
+			// console.log(user.password)
 
-            // creating token
-            const token = genratetoken(user)
-            return {
-                ...user._doc,
-                id: user._id,
-                token
-            }
-        },
+			// check is user exist's
+			if (!user) {
+				errors.findError = 'user not found';
+				throw new UserInputError('User not found', {
+					errors,
+				});
+			}
+			// checking the password
+			const match = await bcrypt.compare(password, user.password);
+			if (!match) {
+				errors.creds = 'wrong credentials';
+				throw new UserInputError('Wrong credentials', { errors });
+			}
+
+			// creating token
+			const token = genratetoken(user);
+			return {
+				...user._doc,
+				id: user._id,
+				token,
+			};
+		},
 	},
 };
