@@ -3,6 +3,8 @@ import { Form, Button } from 'semantic-ui-react';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import Loader from 'react-loader-spinner';
+import { useContext } from 'react';
+import { AuthContext } from '../context/Auth';
 const REGISTER = gql`
 	mutation register(
 		$username: String!
@@ -28,6 +30,7 @@ const REGISTER = gql`
 `;
 
 function Register(props) {
+	const context = useContext(AuthContext);
 	const [errors, setErrors] = useState({});
 	const [value, setValue] = useState({
 		username: '',
@@ -41,7 +44,8 @@ function Register(props) {
 
 	const [addUser, { loading }] = useMutation(REGISTER, {
 		update(proxy, result) {
-			console.log(result);
+			console.log(result.data.login);
+			context.login(result.data.login);
 			props.history.push('/');
 		},
 		onError(err) {
