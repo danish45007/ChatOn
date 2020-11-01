@@ -1,11 +1,15 @@
 import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 import { Grid } from 'semantic-ui-react';
 import PostCard from './PostCard';
 import Loader from 'react-loader-spinner';
+import { AuthContext } from '../context/Auth';
+import PostForm from './PostForm';
+import { useContext } from 'react';
+import { fetchData } from '../utils/graphql';
 
 function Home() {
+	const { user } = useContext(AuthContext);
 	const { loading, data } = useQuery(fetchData);
 	const style = {
 		position: 'fixed',
@@ -26,6 +30,11 @@ function Home() {
 				</h1>
 			</Grid.Row>
 			<Grid.Row>
+				{user && (
+					<Grid.Column>
+						<PostForm />
+					</Grid.Column>
+				)}
 				{loading ? (
 					<Loader
 						style={style}
@@ -47,25 +56,5 @@ function Home() {
 		</Grid>
 	);
 }
-
-const fetchData = gql`
-	{
-		getPosts {
-			id
-			body
-			username
-			createdAt
-			likeCount
-			commnetCount
-			comments {
-				username
-				body
-			}
-			likes {
-				username
-			}
-		}
-	}
-`;
 
 export default Home;

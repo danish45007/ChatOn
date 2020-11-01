@@ -96,7 +96,7 @@ function Register(props) {
 					type="text"
 					name="username"
 					value={value.username}
-					error={errors.username ? true : false}
+					// error={errors.username ? true : false}
 					onChange={onChange}
 				/>
 				<Form.Input
