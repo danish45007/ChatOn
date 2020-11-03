@@ -4,3 +4,8 @@
 	font-size: 2rem;
 	margin-top: 10px;
 }
+
+.ui.red.button:focus,
+.ui.red.buttons .button:focus {
+	background-color: #ca1010!;
+}

@@ -29,8 +29,8 @@ function PostCard({
 				<Card.Description>{body}</Card.Description>
 			</Card.Content>
 			<Card.Content extra>
-				<LikeButton user={user} post={(id, likeCount, likes)} />
-				<Button as="div" labelPosition="right">
+				<LikeButton user={user} post={{ id, likeCount, likes }} />
+				<Button labelPosition="right">
 					<Button color="blue" basic as={Link} to={`/posts/${id}`}>
 						<Icon name="comments" />
 					</Button>
