@@ -32,8 +32,8 @@ function PostForm() {
 		},
 		onError(err) {
 			// console.log(err.graphQLErrors[0].extensions.exception.stacktrace[0]);
-			setErrors(err.graphQLErrors[0].extensions.exception.stacktrace[0]);
-			console.log(errors);
+			setErrors(err.graphQLErrors[0].message);
+			// console.log(errors);
 		},
 	});
 	const onSubmit = (event) => {
@@ -66,7 +66,7 @@ function PostForm() {
 				</Button>
 			</Form>
 			{Object.keys(errors).length > 0 && (
-				<div className="ui error message">
+				<div className="ui error message" style={{ marginBottom: 20 }}>
 					<ul className="list">
 						<li key={errors}>{errors}</li>
 					</ul>

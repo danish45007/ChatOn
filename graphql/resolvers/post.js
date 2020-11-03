@@ -35,7 +35,7 @@ module.exports = {
 		// create post method
 		async createPost(_, { body }, context) {
 			// check is the message body is empty
-			if (args.body.trim() === '') {
+			if (body.trim() === '') {
 				throw new Error('Post body must not be empty');
 			}
 			// verified user

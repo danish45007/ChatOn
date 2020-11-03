@@ -45,8 +45,8 @@ function Register(props) {
 	const [addUser, { loading }] = useMutation(REGISTER, {
 		update(proxy, result) {
 			console.log(result.data.login);
-			context.login(result.data.login);
 			props.history.push('/');
+			context.login(result.data.login);
 		},
 		onError(err) {
 			console.log(err.graphQLErrors[0].extensions.exception.errors);
@@ -96,7 +96,7 @@ function Register(props) {
 					type="text"
 					name="username"
 					value={value.username}
-					// error={errors.username ? true : false}
+					error={errors.username ? true : false}
 					onChange={onChange}
 				/>
 				<Form.Input
@@ -125,6 +125,7 @@ function Register(props) {
 					name="confirmPassword"
 					autoComplete="on"
 					value={value.confirmPassword}
+					error={errors.username ? true : false}
 					onChange={onChange}
 				/>
 				<Button type="submit" primary>
