@@ -9,6 +9,7 @@ import Register from './components/Register';
 import { Container } from 'semantic-ui-react';
 import { AuthProvider } from './context/Auth';
 import AuthRoute from './utils/AuthRoute';
+import SinglePost from './components/SinglePost';
 
 function App() {
 	return (
@@ -19,6 +20,7 @@ function App() {
 					<Route exact path="/" component={Home} />
 					<AuthRoute exact path="/login" component={Login} />
 					<AuthRoute exact path="/register" component={Register} />
+					<Route exact path="/posts/:postId" component={SinglePost} />
 				</Container>
 			</BrowserRouter>
 		</AuthProvider>
