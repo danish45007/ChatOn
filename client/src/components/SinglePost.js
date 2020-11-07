@@ -46,10 +46,9 @@ function SinglePost(props) {
 			body,
 			createdAt,
 			username,
-			comments,
 			likes,
 			likeCount,
-			commentCount,
+			commnetCount,
 		} = data.getPost;
 		postMarkup = (
 			<Grid>
@@ -78,7 +77,7 @@ function SinglePost(props) {
 										<Icon name="comments" />
 									</Button>
 									<Label as="a" basic color="blue" pointing="left">
-										{commentCount}
+										{commnetCount}
 									</Label>
 								</Button>
 							</Card.Content>
