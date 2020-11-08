@@ -29,6 +29,10 @@ function SinglePost(props) {
 		top: '50%',
 		left: '50%',
 	};
+	// redirect to home after post delete
+	function deletePostCallback() {
+		props.history.push('/');
+	}
 	let postMarkup;
 	if (loading || !data || error) {
 		postMarkup = (
@@ -83,7 +87,7 @@ function SinglePost(props) {
 									</Label>
 								</Button>
 								{user && user.username === username && (
-									<DeleteButton post={{ id }} />
+									<DeleteButton post={{ id }} callback={deletePostCallback} />
 								)}
 							</Card.Content>
 						</Card>
