@@ -9,6 +9,7 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/Auth';
 import LikeButton from './LikeButton';
+import DeleteButton from './DeleteButton';
 
 function SinglePost(props) {
 	const [seed, setSeed] = useState('');
@@ -50,12 +51,13 @@ function SinglePost(props) {
 			likeCount,
 			commnetCount,
 		} = data.getPost;
+		// console.log(id);
 		postMarkup = (
 			<Grid>
 				<Grid.Row>
 					<Grid.Column width={2}>
 						<Image
-							floated="rigth"
+							floated="right"
 							size="mini"
 							src={`https://avatars.dicebear.com/api/human/${seed}.svg`}
 						/>
@@ -80,6 +82,9 @@ function SinglePost(props) {
 										{commnetCount}
 									</Label>
 								</Button>
+								{user && user.username === username && (
+									<DeleteButton post={{ id }} />
+								)}
 							</Card.Content>
 						</Card>
 					</Grid.Column>
@@ -94,6 +99,7 @@ function SinglePost(props) {
 const FETCH_POST_QUERY = gql`
 	query($postId: ID!) {
 		getPost(postId: $postId) {
+			id
 			username
 			body
 			createdAt
