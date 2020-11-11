@@ -19,7 +19,7 @@ module.exports = {
 				);
 			}
 			const post = await Post.findById(postId);
-			console.log(post);
+			// console.log(post);
 			if (post) {
 				post.comments.unshift({
 					body,
@@ -37,6 +37,7 @@ module.exports = {
 		deleteComment: async (_, { postId, commnetId }, context) => {
 			// logged user
 			const { username } = checkAuth(context);
+			// console.log(username);
 			const post = await Post.findById(postId);
 			if (post) {
 				const commentIndex = post.comments.findIndex((c) => c.id === commnetId);

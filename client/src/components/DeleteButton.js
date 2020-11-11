@@ -5,20 +5,24 @@ import { useMutation } from '@apollo/react-hooks';
 import { useState } from 'react';
 import { fetchData } from '../utils/graphql';
 
-function DeleteButton({ post: { id }, callback }) {
+function DeleteButton({ post: { id }, callback, commnetId }) {
 	const [confirmOpen, setConformOpen] = useState(false);
+	console.log(commnetId);
+	const mutation = commnetId ? DELETE_Comment_MUTATION : DELETE_POST_MUTATION;
 
-	const [deletePost] = useMutation(DELETE_POST_MUTATION, {
+	const [deletePost] = useMutation(mutation, {
 		update(proxy) {
 			setConformOpen(false);
-			const data = proxy.readQuery({
-				query: fetchData,
-			});
-			const resPosts = data.getPosts.filter((p) => p.id !== id);
-			proxy.writeQuery({
-				query: fetchData,
-				data: { getPosts: [...resPosts] },
-			});
+			if (!commnetId) {
+				const data = proxy.readQuery({
+					query: fetchData,
+				});
+				const resPosts = data.getPosts.filter((p) => p.id !== id);
+				proxy.writeQuery({
+					query: fetchData,
+					data: { getPosts: [...resPosts] },
+				});
+			}
 			// calling callback function if present
 			if (callback) {
 				callback();
@@ -26,6 +30,7 @@ function DeleteButton({ post: { id }, callback }) {
 		},
 		variables: {
 			postId: id,
+			commnetId,
 		},
 	});
 	return (
@@ -50,6 +55,21 @@ function DeleteButton({ post: { id }, callback }) {
 const DELETE_POST_MUTATION = gql`
 	mutation deletePost($postId: ID!) {
 		deletePost(postId: $postId)
+	}
+`;
+
+const DELETE_Comment_MUTATION = gql`
+	mutation deleteComment($postId: ID!, $commnetId: ID!) {
+		deleteComment(postId: $postId, commnetId: $commnetId) {
+			id
+			comments {
+				id
+				username
+				createdAt
+				body
+			}
+			commnetCount
+		}
 	}
 `;
 
