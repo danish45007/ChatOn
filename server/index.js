@@ -15,6 +15,9 @@ const server = new ApolloServer({
 	context: ({ req }) => ({ req, pubsub }),
 });
 
+// defining the port
+const PORT = process.env.PORT || 5500;
+
 // connecting to mongoDB atlas
 mongoose
 	.connect(process.env.DB, {
@@ -24,8 +27,8 @@ mongoose
 	})
 	.then(() => {
 		console.log('Connected to mongoDB');
-		return server.listen(process.env.PORT).then((res) => {
+		return server.listen(PORT).then((res) => {
 			console.log(`Server is running at port ${res.url}`);
 		});
 	})
-	.catch((err) => console.log(err));
+	.catch((err) => console.error(err));
