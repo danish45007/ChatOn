@@ -6,6 +6,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/Auth';
 import LikeButton from './LikeButton';
 import DeleteButton from './DeleteButton';
+import PopupToolTip from '../utils/PopupToolTip';
 
 function PostCard({
 	post: { id, body, username, createdAt, likeCount, commnetCount, likes },
@@ -31,14 +32,21 @@ function PostCard({
 			</Card.Content>
 			<Card.Content extra>
 				<LikeButton user={user} post={{ id, likeCount, likes }} />
-				<Button as="div" labelPosition="right">
-					<Button color="blue" basic as={Link} to={`/posts/${id}`}>
-						<Icon name="comments" />
-					</Button>
-					<Label as="a" basic color="blue" pointing="left">
-						{commnetCount}
-					</Label>
-				</Button>
+				<PopupToolTip
+					inverted
+					content="Add Comment to Post"
+					trigger={
+						<Button as="div" labelPosition="right">
+							<Button color="blue" basic as={Link} to={`/posts/${id}`}>
+								<Icon name="comments" />
+							</Button>
+							<Label as="a" basic color="blue" pointing="left">
+								{commnetCount}
+							</Label>
+						</Button>
+					}
+				/>
+
 				{user && user.username === username && <DeleteButton post={{ id }} />}
 			</Card.Content>
 		</Card>

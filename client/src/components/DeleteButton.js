@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import { useState } from 'react';
 import { fetchData } from '../utils/graphql';
+import PopupToolTip from '../utils/PopupToolTip';
 
 function DeleteButton({ post: { id }, callback, commnetId }) {
 	const [confirmOpen, setConformOpen] = useState(false);
@@ -35,14 +36,21 @@ function DeleteButton({ post: { id }, callback, commnetId }) {
 	});
 	return (
 		<>
-			<Button
-				as="div"
-				color="green"
-				floated="right"
-				onClick={() => setConformOpen(true)}
-			>
-				<Icon name="trash" style={{ margin: 0 }} />
-			</Button>
+			<PopupToolTip
+				inverted
+				content={commnetId ? 'Delete Comment' : 'Delete Post'}
+				trigger={
+					<Button
+						as="div"
+						color="green"
+						floated="right"
+						onClick={() => setConformOpen(true)}
+					>
+						<Icon name="trash" style={{ margin: 0 }} />
+					</Button>
+				}
+			/>
+
 			<Confirm
 				open={confirmOpen}
 				onCancel={() => setConformOpen(false)}

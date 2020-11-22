@@ -5,6 +5,8 @@ import gql from 'graphql-tag';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import PopupToolTip from '../utils/PopupToolTip';
+
 function LikeButton({ user, post: { id, likeCount, likes } }) {
 	const [liked, setLiked] = useState(false);
 	useEffect(() => {
@@ -42,7 +44,8 @@ function LikeButton({ user, post: { id, likeCount, likes } }) {
 
 	return (
 		<Button as="div" labelPosition="right" onClick={likePost}>
-			{likeButton}
+			<PopupToolTip content={liked ? 'Unlike' : 'Like'} trigger={likeButton} />
+
 			<Label as="a" basic color="red" pointing="left">
 				{likeCount}
 			</Label>
